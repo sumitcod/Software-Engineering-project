@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} Transaction - FinGuard{% endblock %}
+
+{% block page_header %}
+<div class="container-fluid mb-4">
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="fw-bold mb-0">
+                {% if object %}Edit{% else %}Add{% endif %} Transaction
+            </h2>
+            <p class="text-muted mb-0">
+                {% if object %}Update transaction details{% else %}Record a new income or expense{% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card stat-card">
+                <div class="card-body p-4">
+                    <form method="post" id="transactionForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.type.id_for_label }}" class="form-label fw-semibold">
+                                Transaction Type <span class="text-danger">*</span>
+                            </label>
+                            {{ form.type }}
+                            {% if form.type.errors %}
+                                <div class="text-danger small mt-1">{{ form.type.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
+                                Category <span class="text-danger">*</span>
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">
+                                Amount <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.amount }}
+                            </div>
+                            {% if form.amount.errors %}
+                                <div class="text-danger small mt-1">{{ form.amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.date.id_for_label }}" class="form-label fw-semibold">
+                                Date <span class="text-danger">*</span>
+                            </label>
+                            {{ form.date }}
+                            {% if form.date.errors %}
+                                <div class="text-danger small mt-1">{{ form.date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
+                                Description (Optional)
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> 
+                                {% if object %}Update{% else %}Save{% endif %} Transaction
+                            </button>
+                            <a href="{% url 'core:transaction_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Filter categories based on transaction type
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('{{ form.type.id_for_label }}');
+        const categorySelect = document.getElementById('{{ form.category.id_for_label }}');
+        
+        // Store all options
+        const allOptions = Array.from(categorySelect.options);
+        
+        function filterCategories() {
+            const selectedType = typeSelect.value;
+            
+            // Remove all options except the first (empty) one
+            while (categorySelect.options.length > 1) {
+                categorySelect.remove(1);
+            }
+            
+            // Add back only matching options
+            allOptions.forEach(option => {
+                if (option.value === '') {
+                    return; // Skip empty option as it's already there
+                }
+                
+                // Check if option text contains the type
+                const optionText = option.text.toLowerCase();
+                if (selectedType === 'INCOME' && optionText.includes('(income)')) {
+                    categorySelect.add(option.cloneNode(true));
+                } else if (selectedType === 'EXPENSE' && optionText.includes('(expense)')) {
+                    categorySelect.add(option.cloneNode(true));
+                }
+            });
+        }
+        
+        // Filter on type change
+        typeSelect.addEventListener('change', filterCategories);
+        
+        // Filter on page load
+        if (typeSelect.value) {
+            filterCategories();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories - FinGuard{% endblock %}
+
+{% block page_header %}
+<div class="container-fluid mb-4">
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="fw-bold mb-0">Categories</h2>
+            <p class="text-muted mb-0">Manage your transaction categories</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'core:category_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add Custom Category
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-4">
+        <!-- Income Categories -->
+        <div class="col-lg-6">
+            <div class="card stat-card">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-arrow-up-circle"></i> Income Categories
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if income_categories %}
+                    <div class="list-group list-group-flush">
+                        {% for category in income_categories %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-tag-fill text-success me-2"></i>
+                                <span class="fw-semibold">{{ category.name }}</span>
+                                {% if not category.is_default %}
+                                    <span class="badge bg-info ms-2">Custom</span>
+                                {% endif %}
+                            </div>
+                            {% if not category.is_default %}
+                            <span class="text-muted small">User-created</span>
+                            {% else %}
+                            <span class="badge bg-light text-dark">Default</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <p class="mb-0">No income categories</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Expense Categories -->
+        <div class="col-lg-6">
+            <div class="card stat-card">
+                <div class="card-header bg-danger text-white py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-arrow-down-circle"></i> Expense Categories
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if expense_categories %}
+                    <div class="list-group list-group-flush">
+                        {% for category in expense_categories %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-tag-fill text-danger me-2"></i>
+                                <span class="fw-semibold">{{ category.name }}</span>
+                                {% if not category.is_default %}
+                                    <span class="badge bg-info ms-2">Custom</span>
+                                {% endif %}
+                            </div>
+                            {% if not category.is_default %}
+                            <span class="text-muted small">User-created</span>
+                            {% else %}
+                            <span class="badge bg-light text-dark">Default</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <p class="mb-0">No expense categories</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>About Categories:</strong>
+                Default categories are available to all users and cannot be deleted. 
+                You can create custom categories specific to your needs.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

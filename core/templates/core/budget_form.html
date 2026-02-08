@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}{% if object %}Edit{% else %}Create{% endif %} Budget - FinGuard{% endblock %}
+
+{% block page_header %}
+<div class="container-fluid mb-4">
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="fw-bold mb-0">
+                {% if object %}Edit{% else %}Create{% endif %} Budget
+            </h2>
+            <p class="text-muted mb-0">
+                {% if object %}Update budget details{% else %}Set a spending limit for a category{% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card stat-card">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
+                                Category <span class="text-danger">*</span>
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">{{ form.category.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Budgets can only be created for expense categories
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">
+                                Budget Amount <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.amount }}
+                            </div>
+                            {% if form.amount.errors %}
+                                <div class="text-danger small mt-1">{{ form.amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.period_start.id_for_label }}" class="form-label fw-semibold">
+                                        Period Start <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.period_start }}
+                                    {% if form.period_start.errors %}
+                                        <div class="text-danger small mt-1">{{ form.period_start.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="{{ form.period_end.id_for_label }}" class="form-label fw-semibold">
+                                        Period End <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.period_end }}
+                                    {% if form.period_end.errors %}
+                                        <div class="text-danger small mt-1">{{ form.period_end.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-lightbulb"></i>
+                            <strong>Tip:</strong> Set realistic budgets based on your spending patterns. 
+                            You'll receive alerts when you're close to or exceed your limits.
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> 
+                                {% if object %}Update{% else %}Create{% endif %} Budget
+                            </button>
+                            <a href="{% url 'core:budget_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

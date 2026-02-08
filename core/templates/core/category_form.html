@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Add Category - FinGuard{% endblock %}
+
+{% block page_header %}
+<div class="container-fluid mb-4">
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="fw-bold mb-0">Add Custom Category</h2>
+            <p class="text-muted mb-0">Create a new category for your transactions</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card stat-card">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">
+                                Category Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.type.id_for_label }}" class="form-label fw-semibold">
+                                Category Type <span class="text-danger">*</span>
+                            </label>
+                            {{ form.type }}
+                            {% if form.type.errors %}
+                                <div class="text-danger small mt-1">{{ form.type.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Choose whether this is an income or expense category
+                            </div>
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Category
+                            </button>
+                            <a href="{% url 'core:category_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
